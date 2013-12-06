@@ -171,7 +171,12 @@ class NowPlaying(object):
     def __init__(self):
         self.trackLabel = gtk.Label()
         self.trackLabel.modify_font(pango.FontDescription("18"))
+        self.trackLabel.set_size_request(800,-1)
         self.trackLabel.set_justify(gtk.JUSTIFY_CENTER)
+        self.trackLabel.set_line_wrap(True)
+        self.trackLabel.set_line_wrap_mode(pango.WRAP_WORD_CHAR)
+
+        self.trackSpacer = gtk.VBox(False, 0)
         
         self.statusLabel = gtk.Label()
         self.statusLabel.modify_font(pango.FontDescription("monospace 14"))
@@ -194,6 +199,14 @@ class NowPlaying(object):
     def getPositionImage(self):
         return self.image
     
+    def getTrackSpacer(self):
+        return self.trackSpacer
+
+    def centerTrackLabel(self):
+        layout = self.trackLabel.get_layout()
+        width, height = layout.get_pixel_size()
+        self.trackSpacer.set_size_request((800 - width)/2, -1)
+
     def updateNp(self, data):
         if len(data) == 0 or data.count(" -+- ") != 4:
             self.trackLabel.set_text("")
@@ -202,8 +215,9 @@ class NowPlaying(object):
             self.image.set_from_pixmap(self.pixmap, self.mask)
             return
         artist, track, paused, position, length = data.split(" -+- ")
-        
+        self.trackLabel.set_size_request(800,-1)
         self.trackLabel.set_text(artist + "\n" + track)
+        self.centerTrackLabel()
         self.statusLabel.set_text(("Paused" if paused == "1" else "Playing") + " @ " + position + "/" + length)
         
         self.pixmap.draw_rectangle(self.gcBlack, True, 0, 0, 800, 20)
@@ -303,7 +317,10 @@ class Base:
         
         vboxNp = gtk.VBox(False, 0)
         self.np = NowPlaying()
-        vboxNp.pack_start(self.np.getTrackLabel(), False, False, 0)
+        hboxTrack = gtk.HBox(False, 0)
+        hboxTrack.pack_start(self.np.getTrackSpacer(), False, False, 0)
+        hboxTrack.pack_end(self.np.getTrackLabel(), True, True, 0)
+        vboxNp.pack_start(hboxTrack, False, False, 0)
         vboxNp.pack_start(self.np.getStatusLabel(), False, False, 0)
         vboxNp.pack_end(self.np.getPositionImage(), False, False, 0)
         vbox.pack_end(vboxNp, False, False, 0)
@@ -429,7 +446,7 @@ class Base:
             
     
     def sigintHandler(self, signal, frame):
-        print "Closing..."
+        print "\nClosing..."
         self.continueListening = False
         sys.exit(0)
 
