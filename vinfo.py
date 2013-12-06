@@ -145,7 +145,7 @@ class DriveInfo(object):
         self.needsUpdate = True
         
         self.label = gtk.Label()
-        self.label.modify_font(pango.FontDescription("12"))
+        self.label.modify_font(pango.FontDescription("14"))
         self.label.set_justify(gtk.JUSTIFY_LEFT)
     
     def getLabel(self):
@@ -163,18 +163,18 @@ class DriveInfo(object):
             return
         usageStr = ""
         for drive in sorted(self.driveDict.iterkeys()):
-            usageStr += ("" if len(usageStr) == 0 else "  ") + drive + self.driveDict[drive]
+            usageStr += ("" if len(usageStr) == 0 else "   ") + drive + " " + self.driveDict[drive]
         self.label.set_text(usageStr)
         self.needsUpdate = False
 
 class NowPlaying(object):
     def __init__(self):
         self.trackLabel = gtk.Label()
-        self.trackLabel.modify_font(pango.FontDescription("16"))
+        self.trackLabel.modify_font(pango.FontDescription("18"))
         self.trackLabel.set_justify(gtk.JUSTIFY_CENTER)
         
         self.statusLabel = gtk.Label()
-        self.statusLabel.modify_font(pango.FontDescription("monospace 12"))
+        self.statusLabel.modify_font(pango.FontDescription("monospace 14"))
         self.statusLabel.set_justify(gtk.JUSTIFY_CENTER)
         
         self.pixbuf = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, False, 8, 800, 20)
@@ -215,8 +215,8 @@ class Base:
     def __init__(self):
         gobject.threads_init()
         
-        self.fontMonospace = pango.FontDescription("monospace 12")
-        self.fontNormal = pango.FontDescription("12")
+        self.fontMonospace = pango.FontDescription("monospace 14")
+        self.fontNormal = pango.FontDescription("14")
         
         self.lastInputTime = time()
         self.continueListening = True
